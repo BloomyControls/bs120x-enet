@@ -52,6 +52,7 @@ ErrorCode EthernetClient::TcpClient::Connect(std::string_view device_ip,
   sock_.async_connect(endpoint, connect_handler);
 
   // block until connect completes
+  io_context_.restart();
   do {
     io_context_.run_one();
   } while (ec == asio::error::would_block);

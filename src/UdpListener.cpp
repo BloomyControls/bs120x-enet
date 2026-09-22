@@ -76,6 +76,7 @@ ErrorCode EthernetClient::UdpListener::Connect(std::string_view interface_ip,
 
   // this might throw, but if creating a thread fails, that's irrecoverable and
   // we're okay with termination
+  io_context_.restart();
   io_worker_ = std::thread([this] { io_context_.run(); });
 
   return ErrorCode::kSuccess;
