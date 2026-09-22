@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 project(bs120xenet
-  VERSION 1.0.0
+  VERSION 1.0.1
   DESCRIPTION "BS120x Ethernet Library"
   HOMEPAGE_URL "https://github.com/BloomyControls/bs120x-enet"
 )
