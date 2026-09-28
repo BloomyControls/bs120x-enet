@@ -141,6 +141,9 @@ void ConfigFile::Load(std::span<const std::uint8_t> buf) {
       } else if (auto rslt = ConvFloatProperty(value)) {
         config_[appended_key] = *rslt;
       } else {
+        if (value.starts_with('"') && value.ends_with('"')) {
+          value = util::Trim(value.substr(1, value.size() - 2));
+        }
         config_[appended_key] = std::string(value);
       }
     }
