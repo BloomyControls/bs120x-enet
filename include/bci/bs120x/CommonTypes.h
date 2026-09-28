@@ -13,6 +13,7 @@
 #define BS120X_INCLUDE_BCI_BS120X_COMMONTYPES_H
 
 #include <array>
+#include <compare>
 #include <cstdint>
 #include <string>
 
@@ -70,13 +71,15 @@ enum class ErrorCode : int {
 
 /// Information about unit health and status.
 struct UnitStatus {
-  std::array<bool, kFanCount>
-      fan_fail_status;  ///< Status of all unit fans. A TRUE value indicates a
-                        ///< fan failure.
-  bool inhibit_state;   ///< State of the cell inhibit. A TRUE value indicates
-                        ///< ENABLED.
-  std::array<float, kTempCount>
-      temps;  ///< Temperatures reported by temperature sensors in Celsius.
+  /// Status of all unit fans. A true value indicates a fan failure.
+  std::array<bool, kFanCount> fan_fail_status;
+  /// State of the cell inhibit. A true value indicates inhibit is enabled.
+  bool inhibit_state;
+  /// Temperatures reported by temperature sensors in Celsius.
+  std::array<float, kTempCount> temps;
+
+  constexpr bool operator==(const UnitStatus&) const = default;
+  constexpr bool operator!=(const UnitStatus&) const = default;
 };
 
 /// Operating mode configuration values.
@@ -88,9 +91,9 @@ struct OpModeConfig {
 
 /// Information about the unit configuration.
 struct UnitConfig {
-  std::string serial_number;  ///< The unit's serial number.
-  std::string
-      firmware_version;  ///< The version of firmware installed on the unit.
+  std::string serial_number;      ///< The unit's serial number.
+  std::string firmware_version;   ///< The version of firmware installed on the
+                                  ///< unit.
   std::string calibration_date;   ///< The calibration date of the unit.
   bool cell_inhibit_enable;       ///< Indicates whether the unit's cell inhibit
                                   ///< lines are enabled.
@@ -101,8 +104,11 @@ struct UnitConfig {
   bool udp_data_broadcast_enable;  ///< Indicates whether the UDP data broadcast
                                    ///< is enabled.
   std::uint8_t box_id;             ///< The unit's box ID.
-  std::uint32_t
-      can_data_period;  ///< The interval at which the unit transmits CAN data.
+  std::uint32_t can_data_period;   ///< The interval at which the unit transmits
+                                   ///< CAN data.
+
+  constexpr bool operator==(const UnitConfig&) const = default;
+  constexpr bool operator!=(const UnitConfig&) const = default;
 };
 
 /**
