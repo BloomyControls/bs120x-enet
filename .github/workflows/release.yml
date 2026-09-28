@@ -69,7 +69,7 @@ jobs:
           build/*.zip
 
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     if: contains(inputs.platforms, 'linux')
 
@@ -98,7 +98,7 @@ jobs:
           build/*.zip
 
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [windows, linux]
     if: inputs.release
 
