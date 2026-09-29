@@ -7,18 +7,18 @@
 #ifndef BS120X_SRC_TCPCLIENT_H
 #define BS120X_SRC_TCPCLIENT_H
 
-#include <bci/bs120x/EthernetClient.h>
-
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <cstdint>
 #include <functional>
 #include <span>
 
-namespace bci::bs120x {
+#include <bci/bs120x/CommonTypes.h>
+
+namespace bci::bs120x::net {
 
 /* Class to handle TCP connection to BS120x and send commands. */
-class EthernetClient::TcpClient {
+class TcpClient {
  public:
   using ErrorCallbackFn = std::function<void(ErrorCode)>;
 
@@ -43,6 +43,6 @@ class EthernetClient::TcpClient {
   ErrorCallbackFn error_handler_;
 };
 
-}  // namespace bci::bs120x
+}  // namespace bci::bs120x::net
 
 #endif /* BS120X_SRC_TCPCLIENT_H */
