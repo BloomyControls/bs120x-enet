@@ -34,6 +34,9 @@ Result<std::vector<UnitConfig>> DiscoverDevices(
       return;
     }
     auto uc = file.ToUnitConfig();
+    if (uc.ip_address.empty()) {
+      return;
+    }
     for (auto&& d : devices) {
       if (d.ip_address == uc.ip_address) {
         return;
