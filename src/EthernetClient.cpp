@@ -34,8 +34,8 @@ unsigned int EthernetClient::Version() noexcept {
 }
 
 EthernetClient::EthernetClient()
-    : udp_listener_{std::make_unique<UdpListener>()},
-      tcp_client_{std::make_unique<TcpClient>()},
+    : udp_listener_{std::make_unique<net::UdpListener>()},
+      tcp_client_{std::make_unique<net::TcpClient>()},
       connected_{false},
       client_error_{ErrorCode::kSuccess},
       cell_voltages_{},

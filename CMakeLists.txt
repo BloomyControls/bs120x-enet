@@ -65,6 +65,7 @@ find_package(Doxygen 1.9.8 OPTIONAL_COMPONENTS dot)
 add_library(bs120xenet ${BS120XENET_LIB_TYPE}
   src/CInterface.cpp
   src/ConfigFile.cpp
+  src/Discovery.cpp
   src/Errors.cpp
   src/EthernetClient.cpp
   src/Frame.cpp

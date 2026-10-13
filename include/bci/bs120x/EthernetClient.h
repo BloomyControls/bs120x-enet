@@ -37,6 +37,11 @@ namespace bci::bs120x {
 
 class Frame;
 
+namespace net {
+class TcpClient;
+class UdpListener;
+}  // namespace net
+
 /**
 * @brief Ethernet client for communicating with the Bloomy Controls Battery
 Simulator (BS120x).
@@ -555,11 +560,9 @@ class EthernetClient {
       std::string_view opt) const;
 
  private:
-  class UdpListener;
-  class TcpClient;
 
-  std::unique_ptr<UdpListener> udp_listener_;
-  std::unique_ptr<TcpClient> tcp_client_;
+  std::unique_ptr<net::UdpListener> udp_listener_;
+  std::unique_ptr<net::TcpClient> tcp_client_;
   bool connected_;
 
   mutable ErrorCode client_error_;
