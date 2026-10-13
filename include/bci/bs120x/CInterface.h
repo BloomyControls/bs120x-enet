@@ -830,6 +830,44 @@ BS120X_API int Bs120xEnet_GetConfigValueString(Bs120xEnetHandle handle,
                                                size_t len);
 /** @} */
 
+/**
+ * @defgroup CDiscovery Discovery
+ * Device discovery functionality.
+ * @{
+ */
+
+/**
+ * @brief Discovery devices over Ethernet.
+ *
+ * This function listens on port 58431 for 2 seconds, recording all devices
+ * which broadcast during that time.
+ *
+ * Example usage (error handling omitted):
+ * @code{.cpp}
+ * size_t n = 10;
+ * Bs120xUnitConfig* buf = calloc(n, sizeof(*buf));
+ * Bs120xEnet_DiscoverDevices("192.168.1.150", buf, &n);
+ * printf("found %zu devices\n", n);
+ * for (size_t i = 0; i < n; ++i) {
+ *   printf("%zu: %s\n", i + 1, buf[i].serial_number);
+ * }
+ * free(buf);
+ * @endcode
+ *
+ * @param[in] interface The network interface to use.
+ * @param[out] devices_buf Buffer to hold the returned devices.
+ * @param[in,out] devices_len Address of an integer containing the length of
+ * @a devices_buf. It will be updated to contain the number of devices
+ * discovered.
+ *
+ * @return 0 on success or a negative error code.
+ */
+BS120X_API int Bs120xEnet_DiscoverDevices(const char* interface,
+                                          Bs120xUnitConfig devices_buf[],
+                                          size_t* devices_len);
+
+/** @} */
+
 /** @} */
 #ifdef __cplusplus
 } /* extern "C" */
