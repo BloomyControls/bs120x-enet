@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 project(bs120xenet
-  VERSION 1.0.1
+  VERSION 1.1.0
   DESCRIPTION "BS120x Ethernet Library"
   HOMEPAGE_URL "https://github.com/BloomyControls/bs120x-enet"
 )
@@ -65,6 +65,7 @@ find_package(Doxygen 1.9.8 OPTIONAL_COMPONENTS dot)
 add_library(bs120xenet ${BS120XENET_LIB_TYPE}
   src/CInterface.cpp
   src/ConfigFile.cpp
+  src/Discovery.cpp
   src/Errors.cpp
   src/EthernetClient.cpp
   src/Frame.cpp

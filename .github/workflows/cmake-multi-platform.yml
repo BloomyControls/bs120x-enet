@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
 
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-24.04, windows-latest]
         build_type: [Release]
         lib_type: [Static, Shared]
         c_compiler: [gcc, clang, cl]
@@ -29,11 +29,11 @@ jobs:
             c_compiler: cl
             cpp_compiler: cl
             problem_matcher: msvc
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             c_compiler: gcc
             cpp_compiler: g++
             problem_matcher: gcc
-          #- os: ubuntu-latest
+          #- os: ubuntu-24.04
           #  c_compiler: clang
           #  cpp_compiler: clang++
         exclude:
@@ -43,13 +43,13 @@ jobs:
             c_compiler: clang
           - os: windows-latest
             problem_matcher: gcc
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             c_compiler: cl
             # clang is a little confused at the moment... at least in part due
             # to a github actions issue with ubuntu runners
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             c_compiler: clang
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             problem_matcher: msvc
 
     steps:

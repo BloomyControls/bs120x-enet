@@ -19,11 +19,11 @@
 namespace asio = boost::asio;
 namespace bs = boost::system;
 
-#include <bci/bs120x/EthernetClient.h>
+#include <bci/bs120x/CommonTypes.h>
 
-namespace bci::bs120x {
+namespace bci::bs120x::net {
 
-EthernetClient::UdpListener::UdpListener()
+UdpListener::UdpListener()
     : io_context_{},
       sock_{io_context_},
       timer_{io_context_},
@@ -33,11 +33,11 @@ EthernetClient::UdpListener::UdpListener()
       data_handler_{},
       error_handler_{} {}
 
-EthernetClient::UdpListener::~UdpListener() noexcept { Disconnect(); }
+UdpListener::~UdpListener() noexcept { Disconnect(); }
 
-ErrorCode EthernetClient::UdpListener::Connect(std::string_view interface_ip,
-                                               std::uint16_t port,
-                                               std::int32_t timeout) noexcept {
+ErrorCode UdpListener::Connect(std::string_view interface_ip,
+                               std::uint16_t port,
+                               std::int32_t timeout) noexcept {
   if (sock_.is_open()) {
     return ErrorCode::kUdpAlreadyConnected;
   }
@@ -82,7 +82,7 @@ ErrorCode EthernetClient::UdpListener::Connect(std::string_view interface_ip,
   return ErrorCode::kSuccess;
 }
 
-void EthernetClient::UdpListener::Disconnect() noexcept {
+void UdpListener::Disconnect() noexcept {
   bs::error_code ignored;
   if (sock_.is_open()) {
     sock_.cancel(ignored);
@@ -96,17 +96,16 @@ void EthernetClient::UdpListener::Disconnect() noexcept {
   }
 }
 
-void EthernetClient::UdpListener::SetDataReceivedCallback(
+void UdpListener::SetDataReceivedCallback(
     DataReceivedCallbackFn callback) noexcept {
   data_handler_ = std::move(callback);
 }
 
-void EthernetClient::UdpListener::SetErrorCallback(
-    ErrorCallbackFn callback) noexcept {
+void UdpListener::SetErrorCallback(ErrorCallbackFn callback) noexcept {
   error_handler_ = std::move(callback);
 }
 
-void EthernetClient::UdpListener::StartReceive() noexcept {
+void UdpListener::StartReceive() noexcept {
   const auto callback = [this](bs::error_code ec, std::size_t len) {
     if (!ec) {
       if (data_handler_ && len > 0) {
@@ -141,4 +140,4 @@ void EthernetClient::UdpListener::StartReceive() noexcept {
   sock_.async_receive(asio::buffer(buf_), callback);
 }
 
-}  // namespace bci::bs120x
+}  // namespace bci::bs120x::net

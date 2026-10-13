@@ -5,6 +5,7 @@
  */
 
 #include <bci/bs120x/CInterface.h>
+#include <bci/bs120x/Discovery.h>
 #include <bci/bs120x/EthernetClient.h>
 
 #include <algorithm>
@@ -67,9 +68,23 @@ static int WrapGet(ErrorCode (EthernetClient::*func)(Args...) const,
   return static_cast<int>(ec::kUnexpectedException);
 }
 
-unsigned int Bs120xEnet_Version() {
-  return BS120XENET_VERSION;
+static void CopyUnitConfig(const UnitConfig& src, Bs120xUnitConfig& dest) {
+  dest = {};
+  src.serial_number.copy(dest.serial_number, sizeof(dest.serial_number) - 1);
+  src.firmware_version.copy(dest.firmware_version,
+                            sizeof(dest.firmware_version) - 1);
+  src.calibration_date.copy(dest.calibration_date,
+                            sizeof(dest.calibration_date) - 1);
+  src.ip_address.copy(dest.ip_address, sizeof(dest.ip_address) - 1);
+  dest.cell_inhibit_enable = src.cell_inhibit_enable;
+  dest.udp_data_port = src.udp_data_port;
+  dest.udp_data_period = src.udp_data_period;
+  dest.udp_data_broadcast_enable = src.udp_data_broadcast_enable;
+  dest.box_id = src.box_id;
+  dest.can_data_period = src.can_data_period;
 }
+
+unsigned int Bs120xEnet_Version() { return BS120XENET_VERSION; }
 
 const char* Bs120xEnet_ErrorMessage(int error) {
   return ErrorMessage(static_cast<ErrorCode>(error));
@@ -283,22 +298,7 @@ int Bs120xEnet_GetUnitConfig(Bs120xEnetHandle handle,
   UnitConfig cfg{};
   int err = WrapGet(&cl::GetUnitConfig, handle, &cfg);
   if (err == static_cast<int>(ec::kSuccess)) {
-    *unit_config_out = {};
-
-    cfg.serial_number.copy(unit_config_out->serial_number,
-                           sizeof(unit_config_out->serial_number) - 1);
-    cfg.firmware_version.copy(unit_config_out->firmware_version,
-                              sizeof(unit_config_out->firmware_version) - 1);
-    cfg.calibration_date.copy(unit_config_out->calibration_date,
-                              sizeof(unit_config_out->calibration_date) - 1);
-    cfg.ip_address.copy(unit_config_out->ip_address,
-                        sizeof(unit_config_out->ip_address) - 1);
-    unit_config_out->cell_inhibit_enable = cfg.cell_inhibit_enable;
-    unit_config_out->udp_data_port = cfg.udp_data_port;
-    unit_config_out->udp_data_period = cfg.udp_data_period;
-    unit_config_out->udp_data_broadcast_enable = cfg.udp_data_broadcast_enable;
-    unit_config_out->box_id = cfg.box_id;
-    unit_config_out->can_data_period = cfg.can_data_period;
+    CopyUnitConfig(cfg, *unit_config_out);
   }
 
   return err;
@@ -426,6 +426,37 @@ int Bs120xEnet_GetConfigValueString(Bs120xEnetHandle handle, const char* opt,
   }
 
   return err;
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
+}
+
+int Bs120xEnet_DiscoverDevices(const char* interface,
+                               Bs120xUnitConfig devices_buf[],
+                               size_t* devices_len) try {
+  if (!interface || !devices_buf || !devices_len || *devices_len == 0) {
+    return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  auto res = DiscoverDevices(interface);
+  if (!res) {
+    return static_cast<int>(res.error());
+  }
+
+  const auto n = std::min(res->size(), *devices_len);
+  *devices_len = n;
+
+  for (std::size_t i{}; i < n; ++i) {
+    CopyUnitConfig(res->at(i), devices_buf[i]);
+  }
+
+  ec ret = ec::kSuccess;
+  if (res->size() > *devices_len) {
+    ret = ec::kBufferTooSmall;
+  }
+
+  return static_cast<int>(ret);
 } catch (const std::bad_alloc&) {
   return static_cast<int>(ec::kAllocationFailed);
 } catch (...) {

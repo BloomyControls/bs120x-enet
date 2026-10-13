@@ -7,8 +7,6 @@
 #ifndef BS120X_SRC_UDPLISTENER_H
 #define BS120X_SRC_UDPLISTENER_H
 
-#include <bci/bs120x/EthernetClient.h>
-
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/udp.hpp>
 #include <boost/asio/steady_timer.hpp>
@@ -17,10 +15,12 @@
 #include <span>
 #include <thread>
 
-namespace bci::bs120x {
+#include <bci/bs120x/CommonTypes.h>
+
+namespace bci::bs120x::net {
 
 /* Class to handle UDP connection to BS120x and receive incoming messages. */
-class EthernetClient::UdpListener {
+class UdpListener {
  public:
   using DataReceivedCallbackFn =
       std::function<void(std::span<const std::uint8_t>)>;
@@ -53,6 +53,6 @@ class EthernetClient::UdpListener {
   void StartReceive() noexcept;
 };
 
-}  // namespace bci::bs120x
+}  // namespace bci::bs120x::net
 
 #endif /* BS120X_SRC_UDPLISTENER_H */

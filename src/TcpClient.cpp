@@ -19,19 +19,19 @@
 namespace asio = boost::asio;
 namespace bs = boost::system;
 
-#include <bci/bs120x/EthernetClient.h>
+#include <bci/bs120x/CommonTypes.h>
 
 #include "Util.h"
 
-namespace bci::bs120x {
+namespace bci::bs120x::net {
 
-EthernetClient::TcpClient::TcpClient()
+TcpClient::TcpClient()
     : io_context_{}, sock_{io_context_}, buf_{}, error_handler_{} {}
 
-EthernetClient::TcpClient::~TcpClient() noexcept { Disconnect(); }
+TcpClient::~TcpClient() noexcept { Disconnect(); }
 
-ErrorCode EthernetClient::TcpClient::Connect(std::string_view device_ip,
-                                             std::uint16_t port) noexcept {
+ErrorCode TcpClient::Connect(std::string_view device_ip,
+                             std::uint16_t port) noexcept {
   if (sock_.is_open()) {
     return ErrorCode::kTcpAlreadyConnected;
   }
@@ -74,7 +74,7 @@ ErrorCode EthernetClient::TcpClient::Connect(std::string_view device_ip,
   return ErrorCode::kSuccess;
 }
 
-void EthernetClient::TcpClient::Disconnect() noexcept {
+void TcpClient::Disconnect() noexcept {
   bs::error_code ignored;
   if (sock_.is_open()) {
     sock_.cancel(ignored);
@@ -84,13 +84,11 @@ void EthernetClient::TcpClient::Disconnect() noexcept {
   }
 }
 
-void EthernetClient::TcpClient::SetErrorCallback(
-    ErrorCallbackFn callback) noexcept {
+void TcpClient::SetErrorCallback(ErrorCallbackFn callback) noexcept {
   error_handler_ = std::move(callback);
 }
 
-ErrorCode EthernetClient::TcpClient::SendData(
-    std::span<const std::uint8_t> data) noexcept {
+ErrorCode TcpClient::SendData(std::span<const std::uint8_t> data) noexcept {
   if (!sock_.is_open()) {
     return ErrorCode::kNotConnected;
   }
@@ -124,4 +122,4 @@ ErrorCode EthernetClient::TcpClient::SendData(
   return ErrorCode::kSuccess;
 }
 
-}  // namespace bci::bs120x
+}  // namespace bci::bs120x::net

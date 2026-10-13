@@ -176,7 +176,7 @@ In your CMakeLists.txt, fetch and link with the driver:
 ```cmake
 FetchContent_Declare(bs120xenet
   GIT_REPOSITORY https://github.com/BloomyControls/bs120x-enet.git
-  GIT_TAG v1.0.1
+  GIT_TAG v1.1.0
   GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(bs120xenet)
@@ -188,7 +188,7 @@ If you have already installed the driver to a standard location on your system,
 you can use `find_package` instead:
 
 ```cmake
-find_package(bs120xenet 1.0.1 REQUIRED)
+find_package(bs120xenet 1.1.0 REQUIRED)
 
 target_link_libraries(my_program PRIVATE bci::bs120xenet)
 ```
